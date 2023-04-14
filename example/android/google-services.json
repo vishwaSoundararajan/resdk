@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "163898328707",
+    "project_id": "resdk-b8f35",
+    "storage_bucket": "resdk-b8f35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163898328707:android:ed68768fc79a6ec6b57db6",
+        "android_client_info": {
+          "package_name": "com.resdk_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163898328707-ecn6h6j8ul8i8qt8efhimqniuat7jib1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkBFs3SpNpK673QDn4WnegkEFCq2v13kY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163898328707-ecn6h6j8ul8i8qt8efhimqniuat7jib1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
