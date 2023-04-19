@@ -3,41 +3,46 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:get/get.dart';
 
 import 'package:flutter/services.dart';
 import 'package:resdk/resdk.dart';
-import 'package:resdk_example/screen1.dart';
-
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'Screen2.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
 final _reSdkPlugin = Resdk();
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown',
-      token = "ezyY7vF9TSqiwA3wxwJmYC:APA91bENxHnr2Z2XFHRpbu7GVJklVnDjs7phmEh2M4YNcxxxrPNRw1wtlvwAkGES_uEH8-wRAck30oBkvOwlZ0fJOyVYbcuOAaiOlHGwA9LTLxFnT5iAPAQEGN2LIgfyh6Ax9Iw5Kcf7";
+      token = "eaAa9ANZQ4aGwoSaibCpWn:APA91bFDXGwMaQxwGNuDoSyatr8QGg23uwIzdPmwqusHvaI8_BEtE6Dh0q2HW3ZRSz6KKX_Ngo-5pK1P4z5-DePPpqE54KZP8VhU8nCZKqjBWbLqBJpoLwz1VPZssIfhO_gimvOn8oXc";
   int notificationCount = 0,
       _counter = 0;
   late String cid;
   late String nList;
+  late  MethodChannel _methodChannel;
   TextEditingController controller1 = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+  _methodChannel = MethodChannel('myChannel');
     initPlatformState();
   }
   passLocation() {
     double lat = 13.0827;
     double lang = 80.2707;
-    _reSdkPlugin.pushLocation(lat, lang);
+    _reSdkPlugin.locationUpdate(lat, lang);
   }
 
   newNotification() {
@@ -49,7 +54,7 @@ class _MyAppState extends State<MyApp> {
 
   ontrackEvent() {
     var content = "On Track Event called!!!";
-    _reSdkPlugin.onTrackEvent(content);
+    _reSdkPlugin.onCustomEvent(content);
   }
 
   deleteNotificationByCampaignid() {
@@ -97,7 +102,7 @@ class _MyAppState extends State<MyApp> {
       "data": {"id": "2d43", "price": "477"}
     };
     String eventData = jsonEncode(data);
-    _reSdkPlugin.onTrackEventwithData(eventData, "Purchase");
+    _reSdkPlugin.onCustomEventWithData(eventData, "Purchase");
   }
 
   updatepushToken() {
@@ -108,6 +113,7 @@ class _MyAppState extends State<MyApp> {
     Map param = {
       "userUniqueId":"123",
       "name": "vishwa",
+      "age":"23",
       "email": "abc@gmail.com",
       "phone": "12334455",
       "gender": "Male",
@@ -117,16 +123,18 @@ class _MyAppState extends State<MyApp> {
       "employed":"true",
       "married":"false",
       "deviceToken":token,
-      "StoreId":"2334"
+      "storeId":"2334"
     };
     String userData = jsonEncode(param);
     _reSdkPlugin.onDeviceUserRegister(userData);
   }
+
+
   getdeepLinkData() {
     _reSdkPlugin.deepLinkData();
   }
   Future<int?> readnotificationCount() async {
-    var rnCount = await _reSdkPlugin.readNotificationCount()!;
+    var rnCount = await _reSdkPlugin.getReadNotificationCount()!;
     setState(() {
       notificationCount = rnCount!;
     });
@@ -136,7 +144,20 @@ class _MyAppState extends State<MyApp> {
     return null;
   }
 
-
+  void initDynamicLinks() async{
+    print("initDynamic links called!!!");
+    final PendingDynamicLinkData? dynamicLink =
+    await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri? deeplink = dynamicLink?.link;
+    if (deeplink != null) {
+      Get.toNamed(deeplink.queryParameters.values.first);
+    }
+    else{
+      if (kDebugMode) {
+        print("Page not available!!!");
+      }
+    }
+  }
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
@@ -156,8 +177,22 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void myMethod(String message) {
+    print('Message from native code: $message');
+  }
+
   @override
   Widget build(BuildContext context) {
+
+   _methodChannel = MethodChannel('myChannel');
+    _methodChannel.setMethodCallHandler((call) async {
+      if (call.method == 'myMethod') {
+        String message = call.arguments;
+        myMethod(message);
+      }
+    });
+
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -228,7 +263,7 @@ class _MyAppState extends State<MyApp> {
                     child: ElevatedButton(onPressed: () {
                       setState(() async {
                         var un_rCount = await _reSdkPlugin
-                            .unReadNotificationCount();
+                            .getUnReadNotificationCount();
                         print("unReadNotificationCount:: $un_rCount");
                       });
                     }, child: const Text("Un_Read_Notification_Count"),),
@@ -325,6 +360,24 @@ class _MyAppState extends State<MyApp> {
                       _reSdkPlugin.notificationCTAClicked(
                           "c_id12", "a_id34");
                     }, child: Text("NotificationCTAClicked"),),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(onPressed: () {
+                      style:
+                      ElevatedButton.styleFrom(
+                        minimumSize: Size.fromHeight(40),);
+                      _reSdkPlugin.getCampaiginData();
+                    }, child: Text("GetCampaignData"),),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(onPressed: () {
+                      style:
+                      ElevatedButton.styleFrom(
+                        minimumSize: Size.fromHeight(40),);
+                      _reSdkPlugin.deepLinkData();
+                    }, child: Text("GetDeepLinkData"),),
                   ),
 
 

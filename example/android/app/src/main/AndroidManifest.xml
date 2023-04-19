@@ -1,12 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.resdk_example">
+    package="com.visionbank">
 
     <uses-permission android:name= 'android.permission.INTERNET' />
 
    <application
-        android:label="resdk_example"
-        android:name="${applicationName}"
+        android:label="visionbank"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -27,6 +26,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="visionbank" android:host="open"/>
+<!--                <data android:scheme="https" android:host="resu.io/3VX5" />-->
             </intent-filter>
         </activity>
        <service
@@ -57,7 +61,7 @@
 
        <meta-data
            android:name="resulticks.key"
-           android:value="api_key_b78db6b3-9462-4132-a4d3-894db10b3782" />
+           android:value="api_key_7def9b46-cb52-48c7-a858-5213b2cb5e72" />
 
    </application>
 </manifest>

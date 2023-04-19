@@ -17,7 +17,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  provider: ^6.0.5
+  firebase_dynamic_links: ^5.0.14
+  get: ^4.6.5
   resdk:
     # When depending on this package from a real application you should use:
     #   resdk: ^x.y.z

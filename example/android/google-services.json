@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:163898328707:android:6ebaee524e0237c9b57db6",
+        "android_client_info": {
+          "package_name": "com.interakt.visionbank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163898328707-ecn6h6j8ul8i8qt8efhimqniuat7jib1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkBFs3SpNpK673QDn4WnegkEFCq2v13kY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163898328707-ecn6h6j8ul8i8qt8efhimqniuat7jib1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:163898328707:android:ed68768fc79a6ec6b57db6",
         "android_client_info": {
           "package_name": "com.resdk_example"

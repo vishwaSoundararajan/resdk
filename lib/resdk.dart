@@ -5,19 +5,19 @@ class Resdk {
   Future<String?> getPlatformVersion() {
     return ResdkPlatform.instance.getPlatformVersion();
   }
-  pushLocation(double lat, double lang) {
+  locationUpdate(double lat, double lang) {
     ResdkPlatform.instance.pushLocation(lat, lang);
   }
   addNewNotification(String notificationTitle, String notificationBody) {
     ResdkPlatform.instance.addNewNotification(
         notificationTitle, notificationBody);
   }
-  onTrackEvent(String content) {
+  onCustomEvent(String content) {
     ResdkPlatform.instance.onTrackEvent(content);
   }
 
-  onTrackEventwithData(String eventData,String event){
-    ResdkPlatform.instance.onTrackEventwithData(eventData,event);
+  onCustomEventWithData(String eventData,String event){
+    ResdkPlatform.instance.customEvent(eventData,event);
   }
 
   void deleteNotificationByCampaignId(String cid) {
@@ -29,14 +29,19 @@ class Resdk {
   void appConversionTracking() {
     ResdkPlatform.instance.appConversionTracking();
   }
+
+  void appConversionTrackingWithData() {
+    ResdkPlatform.instance.appConversionTracking();
+  }
+
   void formDataCapture(String formData) {
     ResdkPlatform.instance.formDataCapture(formData);
   }
-  Future<int?>  readNotificationCount()async {
+  Future<int?>  getReadNotificationCount()async {
     var r_Ncount= ResdkPlatform.instance.readNotificationCount();
     return r_Ncount;
   }
-  Future <int?> unReadNotificationCount()async {
+  Future <int?> getUnReadNotificationCount()async {
     var un_Ncount= await ResdkPlatform.instance.unReadNotificationCount();
     return un_Ncount;
   }
@@ -47,7 +52,8 @@ class Resdk {
     ResdkPlatform.instance.onDeviceUserRegister(userData);
   }
   void deepLinkData () {
-    ResdkPlatform.instance.deepLinkData();
+   ResdkPlatform.instance.deepLinkData();
+
   }
   void unReadNotification(String cid) {
     ResdkPlatform.instance.unReadNotification(cid);

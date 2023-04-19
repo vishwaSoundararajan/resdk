@@ -29,8 +29,8 @@ class MethodChannelResdk extends ResdkPlatform {
   }
 
   @override
-  onTrackEventwithData(String eventData,String event){
-    methodChannel.invokeMapMethod('onTrackEventwithData',{"eventData":eventData,"event":event});
+  customEvent(String eventData,String event){
+    methodChannel.invokeMapMethod('customEvent',{"eventData":eventData,"event":event});
   }
 
   @override
@@ -60,8 +60,8 @@ class MethodChannelResdk extends ResdkPlatform {
     methodChannel.invokeMapMethod('onDeviceUserRegister',{'userData':userData});
   }
   @override
-  deepLinkData() {
-    methodChannel.invokeMapMethod('deepLinkData');
+  void deepLinkData() {
+  methodChannel.invokeMapMethod('deepLinkData');
   }
   @override
   Future<int?> readNotificationCount() async {
@@ -89,7 +89,7 @@ class MethodChannelResdk extends ResdkPlatform {
   }
 
   @override
-  screentracking(String screenName){
+  screenTracking(String screenName){
     methodChannel.invokeMapMethod('screentracking',{"screenname":screenName});
   }
   @override

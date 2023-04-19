@@ -20,6 +20,8 @@ import java.util.*
 /** ResdkPlugin */
 class ResdkPlugin: FlutterPlugin, MethodCallHandler {
 
+  lateinit var methodChannelforDeeplink:MethodChannel
+
   private lateinit var channel : MethodChannel
   private lateinit var context: Context
   private lateinit var activity: Activity
@@ -32,6 +34,9 @@ class ResdkPlugin: FlutterPlugin, MethodCallHandler {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "resdk")
     channel.setMethodCallHandler(this)
     context = flutterPluginBinding.applicationContext
+
+    methodChannelforDeeplink = MethodChannel(flutterPluginBinding.binaryMessenger, "myChannel")
+    getCampaignData()
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -49,13 +54,13 @@ class ResdkPlugin: FlutterPlugin, MethodCallHandler {
       val email=jsonElement.asJsonObject.get("email").asString
       val phone=jsonElement.asJsonObject.get("phone").asString
       val gender=jsonElement.asJsonObject.get("gender").asString
-      val token=jsonElement.asJsonObject.get("token").asString
+      val token=jsonElement.asJsonObject.get("deviceToken").asString
       val profileUrl=jsonElement.asJsonObject.get("profileUrl").asString
       val dob=jsonElement.asJsonObject.get("dob").asString
       val education=jsonElement.asJsonObject.get("education").asString
       val employed=jsonElement.asJsonObject.get("employed").asBoolean
       val married=jsonElement.asJsonObject.get("married").asBoolean
-      val adId=jsonElement.asJsonObject.get("adId").asString
+      val adId=jsonElement.asJsonObject.get("storeId").asString
 
       val obj = MRegisterUser()
       obj.userUniqueId=userUniqueId
@@ -89,7 +94,7 @@ class ResdkPlugin: FlutterPlugin, MethodCallHandler {
       }
     }
 
-    else if(call.method == "onTrackEventwithData") {
+    else if(call.method == "customEvent") {
       val event: String?=call.argument("event")
       val eventData:String? = call.argument("eventData")
       val jobj= eventData?.let { JSONObject(it) }
@@ -197,7 +202,9 @@ class ResdkPlugin: FlutterPlugin, MethodCallHandler {
     }
 
     else if(call.method == "deepLinkData") {
-      ReAndroidSDK.getInstance(context).deepLinkData
+     var deepLinkData=ReAndroidSDK.getInstance(context).deepLinkData
+      callFlutterMethod(deepLinkData)
+      print("DeepLinkData :: $deepLinkData")
     }
 
     else if(call.method =="qrlink") {
@@ -210,16 +217,39 @@ class ResdkPlugin: FlutterPlugin, MethodCallHandler {
       val myLink: String? = call.argument("myLink")
       ReAndroidSDK.getInstance(context).handleQrLink(myLink,MyIGetQR())
     }
-
     else if(call.method =="notificationCTA"){
       val campainId: String ? = call.argument("campaignId")
       val actionId: String ? = call.argument("actionId")
       ReAndroidSDK.getInstance(context).notificationCTAClicked(campainId,actionId)
 
     }
-
-
-    else {
+    else if(call.method =="getCampaignData"){
+      print("GetCampaiganDataCalled!!!")
+      callFlutterMethod("Checked!!!")
+      ReAndroidSDK.getInstance(context).getCampaignData(object : IDeepLinkInterface {
+        override fun onInstallDataReceived(data: String) {
+          try {
+            val jsonObject = JSONObject(data)
+            //handle
+            callFlutterMethod(jsonObject.toString())
+          } catch (e: Exception) {
+            e.printStackTrace()
+          }
+          Log.e("onInstallDataReceived", data)
+        }
+        override fun onDeepLinkData(data: String) {
+          Log.e("onDeepLinkData", data)
+          try {
+            val jsonObject = JSONObject(data)
+             //handle
+            callFlutterMethod(jsonObject.toString())
+          } catch (e: Exception) {
+            e.printStackTrace()
+          }
+        }
+      })
+    }
+      else {
       result.notImplemented()
     }
   }
@@ -236,9 +266,47 @@ class ResdkPlugin: FlutterPlugin, MethodCallHandler {
   fun clientMessageReceiver(remoteMessage:RemoteMessage,flutterContext: Context){
     io.flutter.Log.d("msgTrace", "From native code!!!!")
     ReAndroidSDK.getInstance(flutterContext).onReceivedCampaign(remoteMessage.data)
+  }
+
+  fun getCampaignData(){
+    print("GetCampaiganDataCalled!!!")
+    callFlutterMethod("Checking!!!")
+    ReAndroidSDK.getInstance(context).getCampaignData(object : IDeepLinkInterface {
+      override fun onInstallDataReceived(data: String) {
+        try {
+          val jsonObject = JSONObject(data)
+             //handle
+          callFlutterMethod(jsonObject.toString())
+        } catch (e: Exception) {
+          e.printStackTrace()
+        }
+        Log.e("onInstallDataReceived", data)
+      }
+      override fun onDeepLinkData(data: String) {
+        Log.e("onDeepLinkData", data)
+        try {
+          val jsonObject = JSONObject(data)
+        //handle
+          callFlutterMethod(jsonObject.toString())
+
+        } catch (e: Exception) {
+          e.printStackTrace()
+        }
+      }
+    })
 
   }
 
+   fun deeplinkdata(){
+     println("DeepLinkData!!!")
+     var deepLinkData=ReAndroidSDK.getInstance(context).deepLinkData
+     println("DeepLinkData :: $deepLinkData")
+   }
 
+
+
+  private fun callFlutterMethod(receivedData: String) {
+    methodChannelforDeeplink.invokeMethod("myMethod", receivedData)
+  }
 
 }

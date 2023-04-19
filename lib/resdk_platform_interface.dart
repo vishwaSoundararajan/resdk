@@ -39,7 +39,7 @@ abstract class ResdkPlatform extends PlatformInterface {
   void onTrackEvent(String content) {
     throw UnimplementedError('onTrackEvent() has not been implemented');
   }
-  void onTrackEventwithData(String eventData, String event) {
+  void customEvent(String eventData, String event) {
     throw UnimplementedError('onTrackEventwithData() has not been implemented.');
   }
 

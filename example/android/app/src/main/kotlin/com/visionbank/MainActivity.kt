@@ -1,13 +1,13 @@
-package com.resdk_example
+package com.visionbank
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import io.flutter.embedding.android.FlutterActivity
+import com.resdk.ReSdk
 import com.resdk.ResdkPlugin
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
